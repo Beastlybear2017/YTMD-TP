@@ -1,11 +1,15 @@
 const path = require("path");
 const fs = require("fs");
-const { CompanionConnector, Settings } = require("ytmdesktop-ts-companion");
+const { CompanionConnector } = require("ytmdesktop-ts-companion");
 const TouchPortalAPI = require("touchportal-api");
 
 const packageJson = require("../package.json");
 
 (async () => {
+    process.on("unhandledRejection", e => {
+        // console.log(e)
+    })
+    
     let playerData;
     const TPClient = await new TouchPortalAPI.Client();
     const pluginId = 'Test YTMD';
@@ -108,36 +112,39 @@ const packageJson = require("../package.json");
             const video = state.video
             const player = state.player
             let playerStates = [
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackcurrentdurationhuman", value: formatTime(player.videoProgress)},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackdurationhuman", value: formatTime(Number((video.durationSeconds || 0).toFixed(0)))},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerTitle", value: video.title},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Playercover", value: video.thumbnails.pop().url},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackauthor", value: video.author},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackalbum", value: video.album || "None"},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerisPaused", value: !state.player.trackState ? "True" : "False" },
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerVPercent", value: state.player.volume},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerCurrentSonglikeState", value: video.likeStatus == 1 ? "INDIFFERENT" : video.likeStatus == 2 ? "Like" : "Dislike"},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.isAdvertisement", value: player.adPlaying == true ? "True" : "False"},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.repeatType", value: player.queue.repeatMode == 0 ? "NONE" : player.queue.repeatMode == 1 ? "ALL" : "ONE"}
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackcurrentdurationhuman", value: formatTime(player?.videoProgress)},
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackdurationhuman", value: formatTime(Number((video?.durationSeconds || 0).toFixed(0)))},
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerTitle", value: video?.title},
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Playercover", value: video?.thumbnails?.pop().url},
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackauthor", value: video?.author},
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackalbum", value: video?.album || "None"},
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerisPaused", value: !state?.player?.trackState ? "True" : "False" },
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerVPercent", value: state?.player?.volume},
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerCurrentSonglikeState", value: video?.likeStatus == 1 ? "INDIFFERENT" : video?.likeStatus == 2 ? "Like" : "Dislike"},
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.isAdvertisement", value: player?.adPlaying == true ? "True" : "False"},
+                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.repeatType", value: player?.queue?.repeatMode == 0 ? "NONE" : player?.queue?.repeatMode == 1 ? "ALL" : "ONE"}
             ]
             TPClient.stateUpdateMany(playerStates)
         }
     });
 
     socketClient.addErrorListener(error => {
-        if (error.message == "Authentication not provided or invalid") {
-            auth()
-        } else {
-            console.error("Got new error:", error)
-        }
-        
+        switch (error.message) {
+            case "Authentication not provided or invalid":
+                auth()
+                break;
+            case "websocket error":
+                break;
+            default:
+                break;
+        }        
     });
 
     async function auth() {
         try {
-            const codeResponse = await restClient.getAuthCode();
+            const codeResponse = await restClient.getAuthCode().catch(e => {});
 
-            const tokenResponse = await restClient.getAuthToken(codeResponse.code);
+            const tokenResponse = await restClient.getAuthToken(codeResponse.code).catch(e => {});
             token = tokenResponse.token;
 
             connector.setAuthToken(token);

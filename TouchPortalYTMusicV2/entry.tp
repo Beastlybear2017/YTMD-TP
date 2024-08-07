@@ -1,8 +1,8 @@
 {
   "sdk": 3,
-  "version": 101,
-  "name": "Test YTMD",
-  "id": "Test YTMD",
+  "version": 100,
+  "name": "YouTube Music Desktop plugin v2",
+  "id": "YoutubeMusicv2",
   "configuration": {
     "colorDark": "#f54242",
     "colorLight": "#f5a442"
@@ -13,7 +13,7 @@
   "categories": [
     {
       "id": "Main",
-      "name": "Test YTMD",
+      "name": "YTMD v2",
       "connectors": [
         {       
           "id": "KillerBOSS.TP.Plugins.YTMD.connectors.APPcontrol",
