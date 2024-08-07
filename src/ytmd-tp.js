@@ -1,23 +1,19 @@
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from 'url';
-import {CompanionConnector, Settings} from "ytmdesktop-ts-companion";
-import TouchPortalAPI from 'touchportal-api'
+const path = require("path");
+const fs = require("fs");
+const { CompanionConnector, Settings } = require("ytmdesktop-ts-companion");
+const TouchPortalAPI = require("touchportal-api");
+
+const packageJson = require("../package.json");
 
 (async () => {
-    let playerData: any
+    let playerData;
     const TPClient = await new TouchPortalAPI.Client();
     const pluginId = 'Test YTMD';
     TPClient.connect({ pluginId });
 
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-
-    const packageJsonPath = path.join(__dirname, "..", "package.json");
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
     const version = packageJson.version;
 
-    const tokenPath = path.join(__dirname, "../.token");
+    const tokenPath = path.join(process.env.APPDATA, 'TouchPortal', 'plugins', packageJson.name, '.token');
 
     if (!fs.existsSync(tokenPath)) {
         fs.writeFileSync(tokenPath, "");
@@ -25,7 +21,7 @@ import TouchPortalAPI from 'touchportal-api'
 
     let token = fs.readFileSync(tokenPath, "utf-8");
 
-    const settings: Settings = {
+    const settings = {
         host: "127.0.0.1",
         port: 9863,
         appId: "ytmd-v2-tp",
@@ -37,7 +33,7 @@ import TouchPortalAPI from 'touchportal-api'
         settings.token = token;
     }
 
-    let connector: CompanionConnector;
+    let connector;
     try {
         connector = new CompanionConnector(settings);
     } catch (error) {
@@ -48,7 +44,7 @@ import TouchPortalAPI from 'touchportal-api'
     const restClient = connector.restClient;
     const socketClient = connector.socketClient;
 
-    TPClient.on("Action", async (data: any, hold: Boolean) => {
+    TPClient.on("Action", async (data, hold) => {
         const value = data.data[0]?.value
         switch (data.actionId) {
             case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.Play/Pause":
@@ -91,7 +87,7 @@ import TouchPortalAPI from 'touchportal-api'
         }
     })
 
-    TPClient.on("ConnectorChange",async (data: any) => {
+    TPClient.on("ConnectorChange",async (data) => {
         switch (data.connectorId) {
             case "KillerBOSS.TP.Plugins.YTMD.connectors.APPcontrol":
                 await restClient.setVolume(data.value).catch(e => {})
@@ -109,8 +105,8 @@ import TouchPortalAPI from 'touchportal-api'
 
         if (playerData !== statePlayer) {
             playerData = statePlayer;
-            const video: any = state.video
-            const player: any = state.player
+            const video = state.video
+            const player = state.player
             let playerStates = [
                 {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackcurrentdurationhuman", value: formatTime(player.videoProgress)},
                 {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackdurationhuman", value: formatTime(Number((video.durationSeconds || 0).toFixed(0)))},
@@ -162,7 +158,7 @@ import TouchPortalAPI from 'touchportal-api'
     await new Promise(() => {
     });
 
-    function formatTime(seconds: number): string {
+    function formatTime(seconds) {
         const hours = Math.floor(seconds / 3600);
         const minutesRemaining = seconds % 3600;
         const minutes = Math.floor(minutesRemaining / 60);

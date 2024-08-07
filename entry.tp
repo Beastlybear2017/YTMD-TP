@@ -7,7 +7,9 @@
     "colorDark": "#f54242",
     "colorLight": "#f5a442"
   },
-  "plugin_start_cmd_windows": "%TP_PLUGIN_FOLDER%YTMD TP\\ytmd-tp.exe",
+  "plugin_start_cmd_windows": "%TP_PLUGIN_FOLDER%YTMD TP\\ytmd-tp-win.exe",
+  "plugin_start_cmd_mac": "sh %TP_PLUGIN_FOLDER%YTMD TP\\ytmd-tp-macos",
+  "plugin_start_cmd_linux": "sh %TP_PLUGIN_FOLDER%YTMD TP\\ytmd-tp-linux",
   "categories": [
     {
       "id": "Main",
