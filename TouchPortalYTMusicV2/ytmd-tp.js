@@ -12,7 +12,7 @@ const packageJson = require("../package.json");
     
     let playerData;
     const TPClient = await new TouchPortalAPI.Client();
-    const pluginId = 'Test YTMD';
+    const pluginId = 'YoutubeMusicv2';
     TPClient.connect({ pluginId });
 
     const version = packageJson.version;
@@ -111,20 +111,30 @@ const packageJson = require("../package.json");
             playerData = statePlayer;
             const video = state.video
             const player = state.player
-            let playerStates = [
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackcurrentdurationhuman", value: formatTime(player?.videoProgress)},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackdurationhuman", value: formatTime(Number((video?.durationSeconds || 0).toFixed(0)))},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerTitle", value: video?.title},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Playercover", value: video?.thumbnails?.pop().url},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackauthor", value: video?.author},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackalbum", value: video?.album || "None"},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerisPaused", value: !state?.player?.trackState ? "True" : "False" },
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerVPercent", value: state?.player?.volume},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerCurrentSonglikeState", value: video?.likeStatus == 1 ? "INDIFFERENT" : video?.likeStatus == 2 ? "Like" : "Dislike"},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.isAdvertisement", value: player?.adPlaying == true ? "True" : "False"},
-                {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.repeatType", value: player?.queue?.repeatMode == 0 ? "NONE" : player?.queue?.repeatMode == 1 ? "ALL" : "ONE"}
-            ]
-            TPClient.stateUpdateMany(playerStates)
+            function states() {
+                try {
+                    let playerStates = [
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackcurrentdurationhuman", value: formatTime(player.videoProgress)},
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackdurationhuman", value: formatTime(Number((video.durationSeconds || 0).toFixed(0)))},
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerTitle", value: video.title},
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Playercover", value: video.thumbnails?.pop().url},
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackauthor", value: video.author},
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackalbum", value: video.album || "None"},
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerisPaused", value: !state.player.trackState ? "True" : "False" },
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerVPercent", value: state.player.volume},
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerCurrentSonglikeState", value: video.likeStatus == 1 ? "INDIFFERENT" : video.likeStatus == 2 ? "Like" : "Dislike"},
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.isAdvertisement", value: player.adPlaying == true ? "True" : "False"},
+                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.repeatType", value: player.queue.repeatMode == 0 ? "NONE" : player.queue.repeatMode == 1 ? "ALL" : "ONE"}
+                    ]
+                    TPClient.stateUpdateMany(playerStates)                        
+                } catch (error) {
+                    setTimeout(() => {
+                        states()
+                    }, 2000);
+                }
+            
+            }
+            states()
         }
     });
 
@@ -142,9 +152,9 @@ const packageJson = require("../package.json");
 
     async function auth() {
         try {
-            const codeResponse = await restClient.getAuthCode().catch(e => {});
+            const codeResponse = await restClient.getAuthCode();
 
-            const tokenResponse = await restClient.getAuthToken(codeResponse.code).catch(e => {});
+            const tokenResponse = await restClient.getAuthToken(codeResponse.code);
             token = tokenResponse.token;
 
             connector.setAuthToken(token);

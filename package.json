@@ -1,0 +1,29 @@
+{
+  "name": "ytmd-tp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./touchPortalYTMusicV2/ytmd-tp.js",
+  "scripts": {
+    "build": "pkg ./TouchPortalYTMusicV2/ytmd-tp.js --out-path ./builds",
+    "start": "node ./TouchPortalYTMusicV2/ytmd-tp.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Beastlybear2017/YTMD-TP.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Beastlybear2017/YTMD-TP/issues"
+  },
+  "homepage": "https://github.com/Beastlybear2017/YTMD-TP#readme",
+  "dependencies": {
+    "@types/node": "^22.1.0",
+    "@yao-pkg/pkg-fetch": "^3.5.9",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "touchportal-api": "^3.3.0",
+    "ytmdesktop-ts-companion": "^1.0.5"
+  }
+}
