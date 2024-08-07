@@ -13,7 +13,7 @@ const packageJson = require("../package.json");
 
     const version = packageJson.version;
 
-    const tokenPath = path.join(process.env.APPDATA, 'TouchPortal', 'plugins', packageJson.name, '.token');
+    const tokenPath = path.join(process.env.APPDATA, 'TouchPortal', 'plugins', 'TouchPortalYTMusicV2', '.token');
 
     if (!fs.existsSync(tokenPath)) {
         fs.writeFileSync(tokenPath, "");
