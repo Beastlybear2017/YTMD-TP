@@ -5,6 +5,7 @@ This is an update to [KillerBOSS2019](https://github.com/KillerBOSS2019)'s [TP-Y
 ## Need to Add
 ```
 - Queue Info (Next / Previous Track Info)
+- Auto Reconnect if YTMD is Closed
 ```
 
 ## Waiting for YTMD Update to Add
