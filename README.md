@@ -43,7 +43,7 @@ This is an integration for [TouchPortal](https://www.touch-portal.com/) that All
 
 
 ## installation
-- For smoother integration, I recommend using my [fork of YTMD](https://github.com/Beastlybear2017/ytmdesktop/releases/tag/v2.0.5) until the official v2.1 is released.
+- For smoother integration, I recommend using my [fork of YTMD](https://github.com/Beastlybear2017/ytmdesktop/releases/tag/v2.0.5) until the official v2.1 is released, however you can use the [official YTMD build](https://github.com/ytmdesktop/ytmdesktop) if you prefer.
 - Download latest version of YTMD-TP Plugin from [releases](https://github.com/Beastlybear2017/YTMD-TP/releases)
 
 - Open YTMD, enable the companion server and allow authorization requests
