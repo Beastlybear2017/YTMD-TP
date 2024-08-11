@@ -2,10 +2,13 @@
   "name": "ytmd-tp",
   "version": "1.0.0",
   "description": "",
-  "main": "./touchPortalYTMusicV2/ytmd-tp.js",
+  "main": "./touchPortalYTMusicV2/TouchPortalYTMusicV2/ytmd-tp.js",
   "scripts": {
-    "build": "pkg ./TouchPortalYTMusicV2/ytmd-tp.js --out-path ./builds",
-    "start": "node ./TouchPortalYTMusicV2/ytmd-tp.js"
+    "start": "node TouchPortalYTMusicV2/ytmd-tp.js",
+    "build-all": "npm run build-win && npm run build-mac && npm run build-linux",
+    "build-win": "pkg ./TouchPortalYTMusicV2/ytmd-tp.js --target node20-win-x64 --out-path ./builds/win/TouchPortalYTMusicV2 && resedit --in ./builds/win/TouchPortalYTMusicV2/ytmd-tp.exe --out ./builds/win/TouchPortalYTMusicV2/ytmd-tp-win.exe --icon 1,.\\TouchPortalYTMusicV2/icon.ico --file-description \"YouTube Music Desktop v2 Touch Portal Plugin\" --set-product-name \"YouTube Music Desktop v2 Touch Portal Plugin\" && del /f /q builds\\win\\TouchPortalYTMusicV2.tpp && copy TouchPortalYTMusicV2\\icon.png builds\\win\\TouchPortalYTMusicV2\\icon.png && copy TouchPortalYTMusicV2\\entry.tp builds\\win\\TouchPortalYTMusicV2\\entry.tp && del /q /f builds\\win\\TouchPortalYTMusicV2\\ytmd-tp.exe && cd builds\\win && 7z -y a -tzip TouchPortalYTMusicV2.tpp TouchPortalYTMusicV2 && rmdir /s /q TouchPortalYTMusicV2",
+    "build-mac": "pkg ./TouchPortalYTMusicV2/ytmd-tp.js --target node20-darwin-x64 --out-path ./builds/mac/TouchPortalYTMusicV2 && del /f /q builds\\mac\\TouchPortalYTMusicV2.tpp && copy TouchPortalYTMusicV2\\ytmd-tp.sh builds\\mac\\TouchPortalYTMusicV2\\ytmd-tp.sh && copy TouchPortalYTMusicV2\\entry.tp builds\\mac\\TouchPortalYTMusicV2\\entry.tp && copy TouchPortalYTMusicV2\\icon.png builds\\mac\\TouchPortalYTMusicV2\\icon.png && copy TouchPortalYTMusicV2\\entry.tp builds\\mac\\TouchPortalYTMusicV2\\entry.tp && cd builds\\mac && 7z -y a -tzip TouchPortalYTMusicV2.tpp TouchPortalYTMusicV2 && rmdir /s /q TouchPortalYTMusicV2",
+    "build-linux": "pkg ./TouchPortalYTMusicV2/ytmd-tp.js --target node20-darwin-x64 --out-path ./builds/linux/TouchPortalYTMusicV2 && del /f /q builds\\linux\\TouchPortalYTMusicV2.tpp && copy TouchPortalYTMusicV2\\ytmd-tp.sh builds\\linux\\TouchPortalYTMusicV2\\ytmd-tp.sh && copy TouchPortalYTMusicV2\\entry.tp builds\\linux\\TouchPortalYTMusicV2\\entry.tp && copy TouchPortalYTMusicV2\\icon.png builds\\linux\\TouchPortalYTMusicV2\\icon.png && copy TouchPortalYTMusicV2\\entry.tp builds\\linux\\TouchPortalYTMusicV2\\entry.tp && cd builds\\linux && 7z -y a -tzip TouchPortalYTMusicV2.tpp TouchPortalYTMusicV2 && rmdir /s /q TouchPortalYTMusicV2"
   },
   "repository": {
     "type": "git",
@@ -21,8 +24,6 @@
   "dependencies": {
     "@types/node": "^22.1.0",
     "@yao-pkg/pkg-fetch": "^3.5.9",
-    "fs": "^0.0.1-security",
-    "path": "^0.12.7",
     "touchportal-api": "^3.3.0",
     "ytmdesktop-ts-companion": "^1.0.5"
   }

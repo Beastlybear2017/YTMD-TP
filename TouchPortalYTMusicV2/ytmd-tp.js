@@ -6,9 +6,6 @@ const TouchPortalAPI = require("touchportal-api");
 const packageJson = require("../package.json");
 
 (async () => {
-    process.on("unhandledRejection", e => {
-        // console.log(e)
-    })
     
     let playerData;
     const TPClient = await new TouchPortalAPI.Client();
@@ -31,7 +28,7 @@ const packageJson = require("../package.json");
         appId: "ytmd-v2-tp",
         appName: "YTMD v2 Touch Portal",
         appVersion: version
-    }    
+    }
 
     if (token) {
         settings.token = token;
@@ -51,38 +48,38 @@ const packageJson = require("../package.json");
     TPClient.on("Action", async (data, hold) => {
         const value = data.data[0]?.value
         switch (data.actionId) {
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.Play/Pause":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.Play/Pause":
                 value == "Play" ? await restClient.play().catch(e => {}) : await restClient.pause().catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.Next/Previous":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.Next/Previous":
                 value == "Next" ? await restClient.next().catch(e => {}) : await restClient.previous().catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.Like/Dislike":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.Like/Dislike":
                 value == "Like" ? await restClient.toggleLike().catch(e => {}) : await restClient.toggleDislike().catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.VUp/VDown":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.VUp/VDown":
                 value == "Up" ? await restClient.volumeUp().catch(e => {}) : await restClient.volumeDown().catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.mute/unmute":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.mute/unmute":
                 value == "Mute" ? await restClient.mute().catch(e => {}) : await restClient.unmute().catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.forward/rewind":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.forward/rewind":
                 if (!playerData) return
                 value == "Forward" ? await restClient.seekTo(JSON.parse(playerData).videoProgress + 10).catch(e => {}) : await restClient.seekTo(JSON.parse(playerData).videoProgress - 10).catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.RepeatPic":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.RepeatPic":
                 value == "NONE" ? await restClient.repeatMode(0).catch(e => {}) : value == "ALL" ? await restClient.repeatMode(1).catch(e => {}) : await restClient.repeatMode(2).catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.SetSeekBar":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.SetSeekBar":
                 await restClient.seekTo(value).catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.SetVolume":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.SetVolume":
                 await restClient.setVolume(value).catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.PlayTrackNumber":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.PlayTrackNumber":
                 await restClient.playQueueIndex(value - 1).catch(e => {})
                 break;
-            case "KillerBOSS.TouchPortal.Plugin.YTMD.Action.Shuffle":
+            case "Beastlybear.TouchPortal.Plugin.YTMD.Action.Shuffle":
                 await restClient.shuffle().catch(e => {})
                 break;
 
@@ -93,14 +90,13 @@ const packageJson = require("../package.json");
 
     TPClient.on("ConnectorChange",async (data) => {
         switch (data.connectorId) {
-            case "KillerBOSS.TP.Plugins.YTMD.connectors.APPcontrol":
+            case "Beastlybear.TP.Plugins.YTMD.connectors.APPcontrol":
                 await restClient.setVolume(data.value).catch(e => {})
                 break;
         
             default:
                 break;
         }
-        // await res
     })
 
     socketClient.addStateListener(state => {
@@ -114,17 +110,21 @@ const packageJson = require("../package.json");
             function states() {
                 try {
                     let playerStates = [
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackcurrentdurationhuman", value: formatTime(player.videoProgress)},
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackdurationhuman", value: formatTime(Number((video.durationSeconds || 0).toFixed(0)))},
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerTitle", value: video.title},
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Playercover", value: video.thumbnails?.pop().url},
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackauthor", value: video.author},
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.Trackalbum", value: video.album || "None"},
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerisPaused", value: !state.player.trackState ? "True" : "False" },
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerVPercent", value: state.player.volume},
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.PlayerCurrentSonglikeState", value: video.likeStatus == 1 ? "INDIFFERENT" : video.likeStatus == 2 ? "Like" : "Dislike"},
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.isAdvertisement", value: player.adPlaying == true ? "True" : "False"},
-                        {id: "KillerBOSS.TouchPortal.Plugin.YTMD.States.repeatType", value: player.queue.repeatMode == 0 ? "NONE" : player.queue.repeatMode == 1 ? "ALL" : "ONE"}
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.Trackcurrentdurationhuman", value: formatTime(player.videoProgress)},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.Trackdurationhuman", value: formatTime(Number((video.durationSeconds || 0).toFixed(0)))},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.PlayerTitle", value: video.title},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.Playercover", value: video.thumbnails?.pop().url},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.Trackauthor", value: video.author},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.Trackalbum", value: video.album || "None"},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.PlayerisPaused", value: state.player.trackState !== 1 ? "True" : "False"},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.PlayerVPercent", value: state.player.volume},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.PlayerCurrentSonglikeState", value: video.likeStatus == 1 ? "INDIFFERENT" : video.likeStatus == 2 ? "Like" : "Dislike"},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.isAdvertisement", value: player.adPlaying == true ? "True" : "False"},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.repeatType", value: player.queue.repeatMode == 0 ? "NONE" : player.queue.repeatMode == 1 ? "ALL" : "ONE"},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.PreviousSong.title", value: player.queue.items[player.queue.selectedItemIndex - 1]?.title || "None"},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.PreviousSong.author", value: player.queue.items[player.queue.selectedItemIndex - 1]?.author || "None"},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.Next.title", value: player.queue.items[player.queue.selectedItemIndex + 1]?.title || "None"},
+                        {id: "Beastlybear.TouchPortal.Plugin.YTMD.States.Next.author", value: player.queue.items[player.queue.selectedItemIndex + 1]?.author || "None"},
                     ]
                     TPClient.stateUpdateMany(playerStates)                        
                 } catch (error) {
@@ -186,4 +186,8 @@ const packageJson = require("../package.json");
             return `${minutes.toString().padStart(2, '0')}:${secondsRemaining.toString().padStart(2, '0')}`;
         }
     }
+
+    process.on("unhandledRejection", err => {
+        console.error(err);
+    })
 })();
