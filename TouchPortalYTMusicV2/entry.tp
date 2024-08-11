@@ -7,6 +7,14 @@
     "colorDark": "#A51FB6",
     "colorLight": "#0487FF"
   },
+  "settings": [
+	  {
+      "name": "token",
+      "type": "text",
+      "default": "",
+      "readOnly": true
+    }
+  ],
   "plugin_start_cmd_windows": "%TP_PLUGIN_FOLDER%TouchPortalYTMusicV2\\ytmd-tp-win.exe",
   "plugin_start_cmd_mac": "sh %TP_PLUGIN_FOLDER%TouchPortalYTMusicV2\\ytmd-tp.sh",
   "plugin_start_cmd_linux": "sh %TP_PLUGIN_FOLDER%TouchPortalYTMusicV2\\ytmd-tp.sh",

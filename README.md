@@ -46,7 +46,7 @@ This is an integration for [TouchPortal](https://www.touch-portal.com/) that All
 - For smoother integration, I recommend using my [fork of YTMD](https://github.com/Beastlybear2017/ytmdesktop/releases/tag/v2.0.5) until the official v2.1 is released, however you can use the [official YTMD build](https://github.com/ytmdesktop/ytmdesktop) if you prefer.
 - Download latest version of YTMD-TP Plugin from [releases](https://github.com/Beastlybear2017/YTMD-TP/releases)
 
-- Open YTMD, enable the companion server and allow authorization requests
+- Open YTMD, enable the companion server and allow authorization requests.
 ![Code_2LdaDpvW0Z](https://github.com/user-attachments/assets/d18f5d83-af37-4aea-9aed-479e9b7ecf2a)
 
 - Open TouchPortal and click Import Plugin and Select the Downloaded .tpp file. Make sure to trust the plugin (Allows it to start with Touch Portal)
@@ -55,10 +55,9 @@ This is an integration for [TouchPortal](https://www.touch-portal.com/) that All
 After enabling the plugin, you will be presented with a pop-up from YTMD with an authorization request. Make sure to allow the connection.
 - ![TouchPortal_DxEbtiVsVY](https://github.com/user-attachments/assets/bf1a8638-bd3a-45e9-8153-03508be54ff8)
 
-In the event that you missed the popup or denied access, simply restart the plugin from within Touch Portal's settings before re-enabling authorization requests in YTMD:
-- ![TouchPortal_ZXwrfXUSbU](https://github.com/user-attachments/assets/467369a3-f26b-41cf-8825-6275907b034a)
+In the event that you missed the popup or denied access, you should recieve a notification inside of Touch Portal with a button to retry the authentication. In the event of any other disconnects, this will appear again, so ensure to dismiss it when you are finished.
 
-- If this is your first Plugin you may need to restart TouchPortal
+If this is your first Plugin install you may need to restart TouchPortal.
 
 
 

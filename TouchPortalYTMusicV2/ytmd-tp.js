@@ -1,5 +1,3 @@
-const path = require("path");
-const fs = require("fs");
 const { CompanionConnector } = require("ytmdesktop-ts-companion");
 const TouchPortalAPI = require("touchportal-api");
 
@@ -14,13 +12,7 @@ const packageJson = require("../package.json");
 
     const version = packageJson.version;
 
-    const tokenPath = path.join(process.env.APPDATA, 'TouchPortal', 'plugins', 'TouchPortalYTMusicV2', '.token');
-
-    if (!fs.existsSync(tokenPath)) {
-        fs.writeFileSync(tokenPath, "");
-    }
-
-    let token = fs.readFileSync(tokenPath, "utf-8");
+    let token
 
     const settings = {
         host: "127.0.0.1",
@@ -132,7 +124,6 @@ const packageJson = require("../package.json");
                         states()
                     }, 2000);
                 }
-            
             }
             states()
         }
@@ -141,13 +132,33 @@ const packageJson = require("../package.json");
     socketClient.addErrorListener(error => {
         switch (error.message) {
             case "Authentication not provided or invalid":
-                auth()
+                TPClient.sendNotification("YTMD-no-auth", "YTMDv2 Failed to Connect", "\nPlease re-enable 'Enable companion authorization' in YTMD settings\n\nAfter enabled, click the 'Done' button below", [{"id": "re-auth", "title": "Done"}])
                 break;
-            case "websocket error":
+        
+            default:
+                break;
+        }
+        console.log(`YTMDv2 Error: ${error.message}`)
+    });    
+    
+    TPClient.on("Settings", async data => {
+        token = data[0].token
+        if (token) {
+            settings.token = token
+            await connect()
+        } else {
+            await auth()
+        }
+    })
+
+    TPClient.on("NotificationClicked", async (data) => {
+        switch (data.optionId) {
+            case "re-auth":
+                await auth()
                 break;
             default:
                 break;
-        }        
+        }
     });
 
     async function auth() {
@@ -158,23 +169,17 @@ const packageJson = require("../package.json");
             token = tokenResponse.token;
 
             connector.setAuthToken(token);
+            TPClient.settingUpdate("token", token)  
         } catch (error) {
-            console.error(error);
-            process.exit(1);
+            TPClient.sendNotification("YTMD-no-auth", "YTMDv2 Failed to Connect", "\nPlease re-enable 'Enable companion authorization' in YTMD settings\n\nAfter enabled, click the 'Done' button below", [{"id": "re-auth", "title": "Done"}])
         }
-
-        fs.writeFileSync(tokenPath, token);        
     }
 
-    if (!token) {
-        await auth()
+    async function connect() {
+        socketClient.connect();
+        await new Promise(() => {});   
     }
-
-    socketClient.connect();
-
-    await new Promise(() => {
-    });
-
+ 
     function formatTime(seconds) {
         const hours = Math.floor(seconds / 3600);
         const minutesRemaining = seconds % 3600;
@@ -189,5 +194,5 @@ const packageJson = require("../package.json");
 
     process.on("unhandledRejection", err => {
         console.error(err);
-    })
+    })    
 })();
